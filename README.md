@@ -18,7 +18,7 @@ Veyral is a desktop VPN and proxy client for Windows, Linux, and macOS. It finds
 
 ## Run
 
-Download the appropriate executable from [GitHub Releases](https://github.com/Kuloka/Veyral/releases): a portable `.exe` for Windows, `.AppImage` for Linux, or `.dmg` for macOS. The builds are currently unsigned, so Windows SmartScreen or macOS Gatekeeper may ask for confirmation. Windows requests administrator permission on launch; Linux and macOS request it when starting the tunnel.
+Download the appropriate executable from [GitHub Releases](https://github.com/Kuloka/Veyral/releases): a setup `.exe` for Windows, `.AppImage` for Linux, or `.dmg` for macOS. The builds are currently unsigned, so Windows SmartScreen or macOS Gatekeeper may ask for confirmation. Windows requests administrator permission on launch; Linux and macOS request it when starting the tunnel.
 
 To run from source, install Node.js 22 and run `npm install`, then `npm start`. The `prestart` script downloads the official sing-box binary for your OS and verifies its archive checksum. On Windows, `start.cmd` is a quiet first-launch shortcut that installs dependencies and the engine if needed; `Veyral.exe` works directly after this setup.
 
