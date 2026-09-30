@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Veyral</title>
+  <link rel="stylesheet" href="node_modules/@fontsource-variable/manrope/wght.css">
+  <link rel="stylesheet" href="node_modules/flag-icons/css/flag-icons.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app">
+    <header class="titlebar">
+      <div class="brand"><img src="assets/icon.svg" alt="" width="25" height="25"><span>Veyral</span></div>
+      <div class="window-actions">
+        <button id="minimize" aria-label="Свернуть"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10"/></svg></button>
+        <button id="maximize" aria-label="Развернуть"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3.5" y="3.5" width="9" height="9" rx=".5"/></svg></button>
+        <button id="close" aria-label="Закрыть"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="page-top">
+        <div class="top-actions"><button class="settings-button" id="settingsButton" type="button">Настройки</button><button class="refresh" id="refresh" aria-label="Обновить список" title="Обновить список"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M5.8 9a7 7 0 0 1 12-2L20 12M4 12l2.2 5a7 7 0 0 0 12-2"/></svg></button></div>
+      </div>
+
+      <section class="selected" aria-label="Выбранная локация">
+        <div class="selected-location"><span class="selected-flag" id="selectedFlag"><svg class="globe-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m4.5 7 2.2.2 1.4 2.1 2.1.5.8 2.2-1.4 1.5-.2 2.5-2 1.1M15.5 3.7l-.8 2.4 2.3 1.2 2.5-.2M20.8 13.4l-2.8.3-1.7 1.5-.4 3.4-2 1.9-1.2-2.6.3-2.5-1.1-1.4 1.1-2 2.6-.3 1.6 1.1 2.6-.3"/></svg></span><div class="selected-copy"><span class="overline" id="connectionLabel">ПОДКЛЮЧЕНИЕ ВЫКЛЮЧЕНО</span><strong class="selected-name" id="selectedName">Выберите локацию</strong><span class="selected-city" id="selectedCity">Проверяем серверы в фоне</span><button class="selected-ip" id="selectedIp" type="button" disabled></button></div></div>
+        <div class="selected-ping" id="selectedPing" hidden><span class="overline">ОТКЛИК</span><div class="selected-ping-value"><span id="selectedBars"></span><strong id="selectedLatency">—</strong></div><button class="google-location" id="googleLocation" type="button" disabled>Google: где я ↗</button></div>
+        <button class="start" id="start" disabled><span class="start-label">Выберите</span><span class="start-arrow">→</span></button>
+      </section>
+
+      <div class="workspace">
+        <section class="locations-pane" aria-label="Список локаций">
+          <div class="pane-heading"><h2>Локации</h2><span id="availableCount">Поиск...</span></div>
+          <div class="filters">
+            <label class="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.6"/><path d="m16 16 4.2 4.2"/></svg><input id="search" type="search" placeholder="Страна или город" aria-label="Поиск по стране или городу"></label>
+            <select id="protocol" aria-label="Тип прокси"><option value="all">Все типы</option><option value="socks5">SOCKS5</option><option value="socks4">SOCKS4</option><option value="http">HTTP</option><option value="wireguard">WireGuard</option></select>
+          </div>
+          <div class="list-head"><span>СТРАНА И ГОРОД</span><span>ПИНГ</span></div>
+          <div class="proxy-list" id="proxyList"></div>
+        </section>
+
+        <section class="map-pane" aria-label="Карта доступных прокси">
+          <div class="pane-heading"><h2>Карта сети</h2><span id="mapCountries">0 стран</span></div>
+          <div class="map-stage"><canvas id="globe" aria-label="Глобус с доступными прокси"></canvas><div class="map-empty" id="mapEmpty">Точки появятся после проверки</div><div class="map-hover" id="mapHover"></div></div>
+          <div class="map-legend"><span><i class="dot fast"></i> Быстрый</span><span><i class="dot medium"></i> Средний</span><span><i class="dot slow"></i> Высокий пинг</span></div>
+        </section>
+      </div>
+
+      <div class="bottom"><span id="scanState">Загружаем список</span></div>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div class="settings-backdrop" id="settingsBackdrop" hidden><section class="settings-panel" role="dialog" aria-modal="true" aria-labelledby="settingsTitle"><div class="settings-heading"><h2 id="settingsTitle">Настройки</h2><button id="settingsClose" type="button" aria-label="Закрыть">×</button></div><label class="setting-label" for="languageButton" id="languageLabel">Язык</label><select id="language" aria-label="Язык"><option value="en">English</option><option value="ru">Русский</option><option value="tr">Türkçe</option><option value="de">Deutsch</option><option value="fr">Français</option><option value="es">Español</option></select><div class="settings-divider"></div><label class="setting-label" for="routingModeButton" id="routingLabel">Маршрутизация</label><select id="routingMode"><option value="all">Весь компьютер</option><option value="include">Только выбранные программы</option><option value="exclude">Все, кроме выбранных программ</option></select><div class="setting-apps" id="routingApps"></div><button class="setting-action" id="addProgram" type="button">Добавить программу .exe</button><p class="setting-note" id="routingNote">DNS запросы системы проходят через туннель. После изменения маршрута переподключитесь.</p><div class="settings-divider"></div><div class="setting-label" id="wireguardLabel">Свой WireGuard</div><div class="wireguard-name" id="wireguardName">Профиль не импортирован</div><div class="setting-actions"><button class="setting-action" id="importWireGuard" type="button">Импорт .conf</button><button class="setting-action subtle" id="removeWireGuard" type="button">Удалить</button></div><p class="setting-note" id="wireguardNote">Приватный ключ хранится в защищённом хранилище Windows. Для подключения нужен свой WireGuard сервер.</p></section></div>
+  <script src="assets/globe.js"></script>
+  <script src="i18n.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

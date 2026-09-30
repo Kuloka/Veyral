@@ -1,0 +1,20 @@
+const {contextBridge,ipcRenderer}=require('electron');
+contextBridge.exposeInMainWorld('veyral',{
+  scan:()=>ipcRenderer.invoke('scan'),
+  onProgress:callback=>ipcRenderer.on('scan-progress',(_event,data)=>callback(data)),
+  connect:value=>ipcRenderer.invoke('connect-proxy',value),
+  connectWireGuard:()=>ipcRenderer.invoke('connect-wireguard'),
+  getSettings:()=>ipcRenderer.invoke('get-settings'),
+  saveRouting:value=>ipcRenderer.invoke('save-routing',value),
+  chooseProgram:()=>ipcRenderer.invoke('choose-program'),
+  importWireGuard:()=>ipcRenderer.invoke('import-wireguard'),
+  removeWireGuard:()=>ipcRenderer.invoke('remove-wireguard'),
+  disconnect:()=>ipcRenderer.invoke('disconnect-proxy'),
+  openIpCheck:()=>ipcRenderer.invoke('open-ip-check'),
+  openGoogleLocation:()=>ipcRenderer.invoke('open-google-location'),
+  onConnection:callback=>ipcRenderer.on('connection-state',(_event,state)=>callback(state)),
+  onConnectStage:callback=>ipcRenderer.on('connect-stage',(_event,stage)=>callback(stage)),
+  onGoogleLocation:callback=>ipcRenderer.on('google-location',(_event,state)=>callback(state)),
+  setLanguage:value=>ipcRenderer.send('set-language',value),
+  windowAction:action=>ipcRenderer.send('window-action',action)
+});
