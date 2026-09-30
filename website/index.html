@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090a0f">
+  <meta name="description" content="Veyral is a desktop app for choosing a location, checking real proxy latency, and routing your device through a selected connection.">
+  <meta property="og:title" content="Veyral — Your route. Your choice.">
+  <meta property="og:description" content="Explore locations, see real latency, and connect with Veyral for Windows, macOS, and Linux.">
+  <meta property="og:type" content="website">
+  <title>Veyral — Your route. Your choice.</title>
+  <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="page-glow" aria-hidden="true"></div>
+  <header class="site-header shell">
+    <a class="brand" href="#top" aria-label="Veyral home"><img src="assets/icon.svg" alt="" width="34" height="34"><span>Veyral</span></a>
+    <nav class="nav-links" aria-label="Main navigation">
+      <a href="#features">Features</a><a href="#how-it-works">How it works</a><a href="#downloads">Download</a>
+    </nav>
+    <a class="header-link" href="https://github.com/Kuloka/Veyral" target="_blank" rel="noopener noreferrer">View on GitHub <span aria-hidden="true">↗</span></a>
+  </header>
+
+  <main id="top">
+    <section class="hero shell" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="eyebrow-dot"></span> VEYRAL FOR DESKTOP <span class="eyebrow-line"></span> v1.0</div>
+        <h1 id="hero-title">Your route.<br><em>Your choice.</em></h1>
+        <p class="hero-description">Choose a country and city. See the connection quality before you connect. Take control of where your traffic goes.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" id="primary-download" href="#downloads"><span>Download Veyral</span><span class="button-arrow" aria-hidden="true">↗</span></a>
+          <a class="button button-secondary" href="#how-it-works">Explore the app <span aria-hidden="true">↓</span></a>
+        </div>
+        <div class="platforms"><span>AVAILABLE ON</span><strong>Windows</strong><i></i><strong>macOS</strong><i></i><strong>Linux</strong></div>
+      </div>
+      <div class="hero-visual" aria-label="Animated Veyral globe showing example cities">
+        <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+        <canvas id="hero-globe" aria-hidden="true"></canvas>
+        <div class="globe-label globe-label-top"><span class="mini-pulse"></span> EXPLORE THE WORLD</div>
+        <div class="globe-label globe-label-bottom"><span class="crosshair" aria-hidden="true">⌖</span><span>Pick a place.<small>See the route.</small></span></div>
+        <span class="visual-caption">Illustrative map · availability is checked in the app</span>
+      </div>
+    </section>
+
+    <section class="trust-strip shell" aria-label="Product highlights"><div><span class="strip-icon">◎</span><span>Real TCP latency</span></div><div><span class="strip-icon">◈</span><span>Country + city selection</span></div><div><span class="strip-icon">⌁</span><span>Desktop traffic routing</span></div></section>
+
+    <section class="section shell" id="features" aria-labelledby="features-title">
+      <div class="section-intro"><div><p class="section-kicker">MADE FOR CLARITY</p><h2 id="features-title">Know where you’re going.</h2></div><p>A connection should make sense before you press Start. Veyral brings the useful details forward and keeps the rest out of your way.</p></div>
+      <div class="feature-grid">
+        <article class="feature-card feature-large"><div class="feature-icon">◉</div><div class="feature-art latency-art" aria-hidden="true"><span class="latency-line"></span><div class="latency-bars"><b></b><b></b><b></b><b></b></div><span class="latency-readout">TCP RTT <strong>— ms</strong></span></div><h3>Latency that means something.</h3><p>See median TCP connection time to a proxy, measured separately from the time it takes to establish a full connection.</p></article>
+        <article class="feature-card"><div class="feature-icon">◇</div><div class="feature-art location-art" aria-hidden="true"><span class="location-path"></span><span class="location-pin pin-a"></span><span class="location-pin pin-b"></span><span class="location-card">Country <strong>→</strong> City</span></div><h3>Places, not IP lists.</h3><p>Browse by country and city, then choose the route that suits you.</p></article>
+        <article class="feature-card"><div class="feature-icon">↗</div><div class="feature-art route-art" aria-hidden="true"><div class="route-app">V</div><span></span><div class="route-node">↗</div><span></span><div class="route-world">◎</div></div><h3>Routing beyond the app.</h3><p>Use the connection modes available on your platform to route traffic from your device.</p></article>
+      </div>
+    </section>
+
+    <section class="workflow-section" id="how-it-works" aria-labelledby="workflow-title"><div class="shell workflow-inner"><div class="workflow-heading"><p class="section-kicker">THREE SIMPLE STEPS</p><h2 id="workflow-title">From here to anywhere.</h2><p>Veyral checks available locations in the background, so you can choose and connect without waiting for the whole list.</p></div><div class="steps"><article><span class="step-number">01</span><div><h3>Find a location</h3><p>Search a country or city and explore the map.</p></div></article><article><span class="step-number">02</span><div><h3>Check the signal</h3><p>Compare latency and availability at a glance.</p></div></article><article><span class="step-number">03</span><div><h3>Press Start</h3><p>Connect to your selected route and see its status.</p></div></article></div></div></section>
+
+    <section class="section download-section shell" id="downloads" aria-labelledby="downloads-title"><div class="download-heading"><div><p class="section-kicker">GET VEYRAL</p><h2 id="downloads-title">Take the better route.</h2><p>Free desktop downloads from the official GitHub release.</p></div><span class="version-pill">LATEST RELEASE <strong>v1.0</strong></span></div><div class="download-grid">
+      <a class="download-card" href="https://github.com/Kuloka/Veyral/releases/download/v1.0/Veyral-1.0.0-win-x64.exe"><span class="os-icon" aria-hidden="true">▦</span><span><strong>Windows</strong><small>64-bit · .exe</small></span><span class="download-arrow" aria-hidden="true">↗</span></a>
+      <a class="download-card" href="https://github.com/Kuloka/Veyral/releases/download/v1.0/Veyral-1.0.0-mac-arm64.dmg"><span class="os-icon" aria-hidden="true">⌘</span><span><strong>macOS</strong><small>Apple silicon · .dmg</small></span><span class="download-arrow" aria-hidden="true">↗</span></a>
+      <a class="download-card" href="https://github.com/Kuloka/Veyral/releases/download/v1.0/Veyral-1.0.0-mac-x64.dmg"><span class="os-icon" aria-hidden="true">⌘</span><span><strong>macOS</strong><small>Intel · .dmg</small></span><span class="download-arrow" aria-hidden="true">↗</span></a>
+      <a class="download-card" href="https://github.com/Kuloka/Veyral/releases/download/v1.0/Veyral-1.0.0-linux-x86_64.AppImage"><span class="os-icon linux-icon" aria-hidden="true">⌁</span><span><strong>Linux</strong><small>x86_64 · .AppImage</small></span><span class="download-arrow" aria-hidden="true">↗</span></a>
+    </div><p class="download-note">Need another file or the release notes? <a href="https://github.com/Kuloka/Veyral/releases/tag/v1.0" target="_blank" rel="noopener noreferrer">Open the full release ↗</a></p></section>
+  </main>
+
+  <footer class="site-footer shell"><a class="brand" href="#top"><img src="assets/icon.svg" alt="" width="30" height="30"><span>Veyral</span></a><p>Take the route that works for you.</p><div><a href="https://github.com/Kuloka/Veyral" target="_blank" rel="noopener noreferrer">GitHub ↗</a><a href="https://github.com/Kuloka/Veyral/releases" target="_blank" rel="noopener noreferrer">Releases ↗</a></div></footer>
+  <script src="assets/globe.js" defer></script><script src="site.js" defer></script>
+</body>
+</html>
