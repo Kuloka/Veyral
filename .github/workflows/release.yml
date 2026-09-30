@@ -31,9 +31,44 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run prepare:engine
+      - name: Require Apple signing credentials
+        if: runner.os == 'macOS'
+        shell: bash
+        env:
+          CSC_LINK: ${{ secrets.MAC_CSC_LINK }}
+          CSC_KEY_PASSWORD: ${{ secrets.MAC_CSC_KEY_PASSWORD }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          for name in CSC_LINK CSC_KEY_PASSWORD APPLE_ID APPLE_APP_SPECIFIC_PASSWORD APPLE_TEAM_ID; do
+            if [[ -z "${!name}" ]]; then
+              echo "::error::Missing macOS signing secret: $name"
+              exit 1
+            fi
+          done
       - run: npm run dist
+        if: runner.os != 'macOS'
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      - name: Build, sign and notarize macOS app
+        if: runner.os == 'macOS'
+        run: npm run dist
+        env:
+          CSC_LINK: ${{ secrets.MAC_CSC_LINK }}
+          CSC_KEY_PASSWORD: ${{ secrets.MAC_CSC_KEY_PASSWORD }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+      - name: Verify macOS signature and notarization
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          app="$(find dist -maxdepth 2 -name Veyral.app -type d -print -quit)"
+          test -n "$app"
+          codesign --verify --deep --strict --verbose=2 "$app"
+          xcrun stapler validate "$app"
+          spctl --assess --verbose --type exec "$app"
       - run: node tools/check-windows-elevation.cjs
         if: runner.os == 'Windows'
       - uses: actions/upload-artifact@v4

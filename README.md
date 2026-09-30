@@ -18,9 +18,25 @@ Veyral is a desktop VPN and proxy client for Windows, Linux, and macOS. It finds
 
 ## Run
 
-Download the appropriate executable from [GitHub Releases](https://github.com/Kuloka/Veyral/releases): a setup `.exe` for Windows, `.AppImage` for Linux, or `.dmg` for macOS. The builds are currently unsigned, so Windows SmartScreen or macOS Gatekeeper may ask for confirmation. Windows requests administrator permission on launch; Linux and macOS request it when starting the tunnel.
+Download the appropriate executable from [GitHub Releases](https://github.com/Kuloka/Veyral/releases): a setup `.exe` for Windows, `.AppImage` for Linux, or `.dmg` for macOS. Windows builds are currently unsigned, so SmartScreen may ask for confirmation. Windows requests administrator permission on launch; Linux and macOS request it when starting the tunnel. macOS releases through v1.0.2 were unsigned; future macOS releases require Developer ID signing and Apple notarization.
 
-To run from source, install Node.js 22 and run `npm install`, then `npm start`. The `prestart` script downloads the official sing-box binary for your OS and verifies its archive checksum. On Windows, `start.cmd` is a quiet first-launch shortcut that installs dependencies and the engine if needed; `Veyral.exe` works directly after this setup.
+### macOS release signing
+
+For a downloadable DMG that opens normally under Gatekeeper, enroll in the [Apple Developer Program](https://developer.apple.com/programs/), create a **Developer ID Application** certificate, and export it **with its private key** as a password-protected `.p12`. A Developer ID Installer certificate is only needed for a `.pkg`, not this project's `.dmg`. Create an [app-specific password](https://account.apple.com/) for notarization.
+
+Set these GitHub Actions repository secrets under **Settings → Secrets and variables → Actions**:
+
+| Secret | Value |
+| --- | --- |
+| `MAC_CSC_LINK` | Base64 of the `.p12` file |
+| `MAC_CSC_KEY_PASSWORD` | Password used when exporting the `.p12` |
+| `APPLE_ID` | Apple Developer account email |
+| `APPLE_APP_SPECIFIC_PASSWORD` | App-specific password, not the account password |
+| `APPLE_TEAM_ID` | Ten-character Apple Developer Team ID |
+
+On macOS, encode the certificate with `base64 -i DeveloperID.p12 | tr -d '\n'` and paste the output into `MAC_CSC_LINK`. Do not commit the `.p12`, passwords, or API keys. The release workflow now signs, notarizes, staples, and verifies the app before uploading the DMG. It fails if any signing secret is missing; existing unsigned releases are not retroactively signed.
+
+To run from source, install Node.js 22 and run `npm install`, then `npm start`. The `prestart` script downloads the official sing-box binary for your OS and verifies its archive checksum. On Windows, `start.cmd` is a quiet first-launch shortcut that installs dependencies and the engine if needed, then builds the local `Veyral.exe` launcher from `Veyral.Launcher.cs` if it is missing. Generated executables stay out of Git.
 
 Veyral does not connect automatically. Select a location from the list and press **Connect**. Press **Disconnect** to stop the tunnel. While connected, closing the window hides Veyral in the system tray and keeps the tunnel running. Double-click the tray icon to reopen it. The tray menu also provides **Disconnect** and **Quit Veyral**; quitting stops the tunnel. When disconnected, closing the window exits the app on Windows and Linux.
 

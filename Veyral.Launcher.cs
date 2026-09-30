@@ -8,7 +8,7 @@ using System.Windows.Forms;
 [assembly: AssemblyDescription("Veyral desktop launcher")]
 [assembly: AssemblyCompany("Veyral")]
 [assembly: AssemblyProduct("Veyral")]
-[assembly: AssemblyVersion("0.1.0.0")]
+[assembly: AssemblyVersion("1.0.2.0")]
 
 internal static class Launcher
 {

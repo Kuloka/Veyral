@@ -1,3 +1,10 @@
 node_modules/
 dist/
 vendor/
+/Veyral.exe
+/*.dmg
+/*.AppImage
+/*.blockmap
+*.p12
+*.p8
+*.key

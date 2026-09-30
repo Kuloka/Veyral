@@ -18,6 +18,6 @@ module.exports={
   win:{target:[{target:'nsis',arch:['x64']}],icon:'assets/icon.ico',requestedExecutionLevel:'requireAdministrator'},
   nsis:{oneClick:false,perMachine:true,allowToChangeInstallationDirectory:true,createDesktopShortcut:true,createStartMenuShortcut:true},
   linux:{target:[{target:'AppImage',arch:['x64']}],icon:'assets/icon.png',category:'Network'},
-  mac:{target:[{target:'dmg',arch:[process.arch==='arm64'?'arm64':'x64']}],icon:'assets/icon-mac.png'},
+  mac:{target:[{target:'dmg',arch:[process.arch==='arm64'?'arm64':'x64']}],icon:'assets/icon-mac.png',hardenedRuntime:true,notarize:true},
   artifactName:'Veyral-${version}-${os}-${arch}.${ext}'
 };
