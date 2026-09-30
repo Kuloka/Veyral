@@ -1,6 +1,6 @@
 # Veyral
 
-Website: [kuloka.github.io/Veyral](https://kuloka.github.io/Veyral/). The static site lives in `website/`.
+Website: https://veyralvpn.vercel.app/ The static site lives in `website/`.
 
 ### Cloudflare Pages setup
 
