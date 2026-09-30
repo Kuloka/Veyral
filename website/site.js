@@ -19,17 +19,6 @@ if (canvas && window.VeyralGlobe) {
   reduceMotion.addEventListener('change', event => { globe.idle = !event.matches; });
 }
 
-const primaryDownload = document.getElementById('primary-download');
-if (primaryDownload) {
-  const platform = navigator.userAgentData?.platform || navigator.platform || '';
-  const agent = navigator.userAgent || '';
-  const base = 'https://github.com/Kuloka/Veyral/releases/download/v1.0/';
-  const isAppleSilicon = /Mac/.test(platform) && /arm|aarch64/i.test(agent);
-  if (/Win/i.test(platform)) primaryDownload.href = base + 'Veyral-1.0.0-win-x64.exe';
-  else if (/Mac/i.test(platform)) primaryDownload.href = base + (isAppleSilicon ? 'Veyral-1.0.0-mac-arm64.dmg' : 'Veyral-1.0.0-mac-x64.dmg');
-  else if (/Linux/i.test(platform)) primaryDownload.href = base + 'Veyral-1.0.0-linux-x86_64.AppImage';
-}
-
 if ('IntersectionObserver' in window && !reduceMotion.matches) {
   const observer = new IntersectionObserver(entries => {
     for (const entry of entries) {
