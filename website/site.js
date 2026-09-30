@@ -36,7 +36,7 @@ if ('IntersectionObserver' in window && !reduceMotion.matches) {
       if (entry.isIntersecting) { entry.target.classList.add('is-visible'); observer.unobserve(entry.target); }
     }
   }, { threshold: 0.12 });
-  document.querySelectorAll('.feature-card, .steps article, .download-card').forEach(element => {
+  document.querySelectorAll('.product-details > div, .steps article, .download-row').forEach(element => {
     element.classList.add('reveal'); observer.observe(element);
   });
 }
