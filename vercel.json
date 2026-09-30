@@ -1,0 +1,4 @@
+{
+  "buildCommand": "npm --prefix website ci && npm --prefix website run build",
+  "outputDirectory": "website/dist"
+}

@@ -2,6 +2,6 @@
   "name": "veyralvpn",
   "compatibility_date": "2026-09-30",
   "assets": {
-    "directory": "./website"
+    "directory": "./website/dist"
   }
 }

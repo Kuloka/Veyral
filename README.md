@@ -1,12 +1,12 @@
 # Veyral
 
-Website: https://veyralvpn.vercel.app/ The static site lives in `website/`.
+Website: https://veyralvpn.vercel.app/ The site source lives in `website/` and builds to `website/dist/`.
 
 ### Cloudflare Pages setup
 
-To host the same site in Cloudflare Dashboard, open **Workers & Pages → Create → Pages → Connect to Git** and choose `Kuloka/Veyral`. Use `main` as the production branch, no framework preset, leave the build command empty, and set the build output directory to `website`. Keep the repository root directory at `/`. When you own a domain, add it under the Pages project's **Custom domains** tab; Cloudflare will create the DNS record for a domain managed in the same Cloudflare account. Registering a new domain is a separate step under **Register domains**.
+To host the same site in Cloudflare Dashboard, open **Workers & Pages → Create → Pages → Connect to Git** and choose `Kuloka/Veyral`. Use `main` as the production branch, no framework preset, set the build command to `cd website && npm ci && npm run build`, and set the build output directory to `website/dist`. Keep the repository root directory at `/`. When you own a domain, add it under the Pages project's **Custom domains** tab; Cloudflare will create the DNS record for a domain managed in the same Cloudflare account. Registering a new domain is a separate step under **Register domains**.
 
-If you connected the repository as a **Worker** instead, the root `wrangler.jsonc` deploys only `website/` as static assets. Set the deploy command to `npx wrangler deploy` and leave the root directory at `/`; do not use the entire repository as the assets directory.
+If you connected the repository as a **Worker** instead, the root `wrangler.jsonc` deploys only `website/dist/` as static assets. Set the build command to `cd website && npm ci && npm run build`, the deploy command to `npx wrangler deploy`, and leave the root directory at `/`.
 
 Veyral is a desktop VPN and proxy client for Windows, Linux, and macOS. It finds working public HTTP, SOCKS4, and SOCKS5 proxies, shows their country, city, and TCP latency, and routes traffic through a selected server using a TUN interface. You can also import your own WireGuard client profile. English is the default interface language. Change it in **Settings → Language** to Russian, Turkish, German, French, or Spanish.
 
