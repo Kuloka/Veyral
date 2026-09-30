@@ -1,6 +1,6 @@
-# Veyral v1.0.1
+# Veyral v1.0.2
 
-This update replaces the Windows portable package with a proper installer. The portable launcher could fail to start the administrator-level app after unpacking. The Windows download is now an NSIS setup with installation progress, shortcuts, and elevation.
+The Windows installer and app request administrator permission through their embedded manifests. The release build now checks both manifests before publishing. This release also updates the website download button to scroll directly to the platform choices.
 
 Veyral finds and checks public HTTP, SOCKS4, and SOCKS5 proxies, displays country, city, and TCP latency, and can route traffic through a selected server. It also supports importing a personal WireGuard `.conf` profile.
 

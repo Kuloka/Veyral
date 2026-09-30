@@ -1,5 +1,15 @@
 const canvas = document.getElementById('hero-globe');
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+const primaryDownload = document.getElementById('primary-download');
+const downloadOptions = document.getElementById('download-options');
+
+if (primaryDownload && downloadOptions) {
+  primaryDownload.addEventListener('click', event => {
+    event.preventDefault();
+    downloadOptions.scrollIntoView({ behavior: reduceMotion.matches ? 'instant' : 'smooth', block: 'center' });
+    history.replaceState(null, '', '#download-options');
+  });
+}
 
 if (canvas && window.VeyralGlobe) {
   const globe = new window.VeyralGlobe(canvas, () => {}, () => {});
