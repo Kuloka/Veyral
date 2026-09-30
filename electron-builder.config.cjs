@@ -17,6 +17,6 @@ module.exports={
   extraResources:[{from:path.join('vendor',engine),to:path.join('vendor',engine)}],
   win:{target:[{target:'portable',arch:['x64']}],icon:'assets/icon.ico',requestedExecutionLevel:'requireAdministrator'},
   linux:{target:[{target:'AppImage',arch:['x64']}],icon:'assets/icon.png',category:'Network'},
-  mac:{target:[{target:'dmg',arch:[process.arch==='arm64'?'arm64':'x64']}],icon:'assets/icon.png'},
+  mac:{target:[{target:'dmg',arch:[process.arch==='arm64'?'arm64':'x64']}],icon:'assets/icon-mac.png'},
   artifactName:'Veyral-${version}-${os}-${arch}.${ext}'
 };

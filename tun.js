@@ -64,7 +64,7 @@ function launchTun(configPath,userData){
   if(process.platform==='win32')return {child:spawn(binary,['run','-c',configPath],{windowsHide:true,stdio:['ignore','ignore','pipe']}),pidFile:null};
   const pidFile=path.join(userData,'veyral-engine.pid');
   try{fs.unlinkSync(pidFile);}catch{}
-  const command=`echo $$ > ${shellQuote(pidFile)}; (while kill -0 ${process.pid} 2>/dev/null; do sleep 2; done; kill -TERM $$ 2>/dev/null) & exec ${shellQuote(binary)} run -c ${shellQuote(configPath)}`;
+  const command=`echo $$ > ${shellQuote(pidFile)}; (while kill -0 ${process.pid} 2>/dev/null && kill -0 $$ 2>/dev/null; do sleep 2; done; kill -TERM $$ 2>/dev/null) & exec ${shellQuote(binary)} run -c ${shellQuote(configPath)}`;
   if(process.platform==='linux'){
     const args=process.getuid?.()===0?['-c',command]:['/bin/sh','-c',command];
     return {child:spawn(process.getuid?.()===0?'/bin/sh':'pkexec',args,{stdio:['ignore','ignore','pipe']}),pidFile};
@@ -109,13 +109,13 @@ async function startTun(entry,userData,routing){
   child.stderr.on('data',chunk=>{stderr=(stderr+chunk.toString()).slice(-4000);});
   child.on('error',error=>{stderr=error.message;});
   try{
-    const deadline=Date.now()+6000;let ready=false;
+    const deadline=Date.now()+(process.platform==='win32'?6000:45000);let ready=false;
     while(Date.now()<deadline){
       if(child.exitCode!==null||child.signalCode!==null)throw new Error(stderr||`sing-box завершился с кодом ${child.exitCode}`);
       if(await routeIsReady()){ready=true;break;}
       await new Promise(resolve=>setTimeout(resolve,700));
     }
-    if(!ready)throw new Error(`Windows не создала маршрут Veyral. ${stderr}`.trim());
+    if(!ready)throw new Error(`Veyral could not create the system route. ${stderr}`.trim());
   }catch(error){stopTun(child,pidFile);if(entry.type==='wireguard')try{fs.unlinkSync(configPath);}catch{}throw error;}
   if(entry.type==='wireguard')try{fs.unlinkSync(configPath);}catch{}
   timings.routeReadyMs=Math.round(performance.now()-stageStarted);
