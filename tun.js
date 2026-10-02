@@ -24,7 +24,7 @@ async function endpointIp(host){
   return lookup.address;
 }
 
-function configFor(entry,routing={mode:'all',apps:[]}){
+function configFor(entry,routing={mode:'all',apps:[]},upstreamInterface=null){
   const wireguard=entry.type==='wireguard';
   let proxy;
   if(wireguard){
@@ -39,7 +39,16 @@ function configFor(entry,routing={mode:'all',apps:[]}){
   if(routing.mode==='exclude'&&routing.apps?.length)rules.push({process_path:routing.apps,action:'route',outbound:'direct'});
   if(!wireguard)rules.push({network:'udp',action:'reject'});
   if(routing.mode==='include'&&routing.apps?.length)rules.push({process_path:routing.apps,action:'route',outbound:'proxy'});
-  return {log:{level:'warn'},dns:{servers:[{type:'https',tag:'remote-dns',server:'1.1.1.1',tls:{server_name:'cloudflare-dns.com'},detour:'proxy'}],final:'remote-dns'},inbounds:[{type:'tun',tag:'tun-in',...(process.platform==='darwin'?{}:{interface_name:'Veyral'}),address:['172.19.0.1/30','fdfe:dcba:9876::1/126'],auto_route:true,strict_route:process.platform!=='darwin',...(process.platform==='linux'?{auto_redirect:true}:{}),dns_mode:'hijack',stack:'gvisor'}],...(wireguard?{endpoints:[proxy],outbounds:[{type:'direct',tag:'direct'}]}:{outbounds:[proxy,{type:'direct',tag:'direct'}]}),route:{auto_detect_interface:true,final:routing.mode==='include'?'direct':'proxy',rules}};
+  return {log:{level:'warn'},dns:{servers:[{type:'https',tag:'remote-dns',server:'1.1.1.1',tls:{server_name:'cloudflare-dns.com'},detour:'proxy'}],final:'remote-dns'},inbounds:[{type:'tun',tag:'tun-in',...(process.platform==='darwin'?{}:{interface_name:'Veyral'}),address:['172.19.0.1/30','fdfe:dcba:9876::1/126'],auto_route:true,strict_route:process.platform!=='darwin',...(process.platform==='linux'?{auto_redirect:true}:{}),dns_mode:'hijack',stack:'gvisor'}],...(wireguard?{endpoints:[proxy],outbounds:[{type:'direct',tag:'direct'}]}:{outbounds:[proxy,{type:'direct',tag:'direct'}]}),route:{...(process.platform==='win32'&&upstreamInterface?{default_interface:upstreamInterface}:{auto_detect_interface:true}),final:routing.mode==='include'?'direct':'proxy',rules}};
+}
+
+async function windowsUpstreamInterface(ip){
+  if(net.isIP(ip)!==4)throw new Error('Cannot select the network interface for a non-IPv4 server');
+  const command=`$ErrorActionPreference='Stop'; $route=Find-NetRoute -RemoteIPAddress '${ip}' | Where-Object { $_.DestinationPrefix } | Select-Object -Last 1; if (-not $route -or $route.InterfaceAlias -eq 'Veyral') { throw 'No physical route to server' }; $interface=Get-NetIPInterface -InterfaceIndex $route.InterfaceIndex -AddressFamily IPv4; if ($interface.ConnectionState -ne 'Connected') { throw 'Server network interface is disconnected' }; [string]$route.InterfaceAlias`;
+  const {stdout}=await runFile('powershell.exe',['-NoProfile','-Command',command],{windowsHide:true,timeout:5000});
+  const name=stdout.trim();
+  if(!name||name.includes('\n'))throw new Error('Could not identify the upstream network interface');
+  return name;
 }
 
 async function isAdministrator(){
@@ -99,7 +108,9 @@ async function startTun(entry,userData,routing){
     const peers=await Promise.all(entry.peers.map(async peer=>({...peer,host:await endpointIp(peer.host)})));
     configured={...entry,peers};
   }
-  fs.writeFileSync(configPath,JSON.stringify(configFor(configured,routing)),{mode:0o600});
+  const upstreamInterface=process.platform==='win32'?await windowsUpstreamInterface(entry.type==='wireguard'?configured.peers[0].host:entry.address.split(':')[0]):null;
+  timings.upstreamInterface=upstreamInterface;
+  fs.writeFileSync(configPath,JSON.stringify(configFor(configured,routing,upstreamInterface)),{mode:0o600});
   try{await runFile(binary,['check','-c',configPath],{windowsHide:true,timeout:10000});}
   catch(error){if(entry.type==='wireguard')try{fs.unlinkSync(configPath);}catch{}throw error;}
   timings.configCheckMs=Math.round(performance.now()-stageStarted);

@@ -31,7 +31,8 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run prepare:engine
-      - name: Require Apple signing credentials
+      - name: Check Apple signing credentials
+        id: mac_signing
         if: runner.os == 'macOS'
         shell: bash
         env:
@@ -41,18 +42,27 @@ jobs:
           APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         run: |
+          missing=0
           for name in CSC_LINK CSC_KEY_PASSWORD APPLE_ID APPLE_APP_SPECIFIC_PASSWORD APPLE_TEAM_ID; do
             if [[ -z "${!name}" ]]; then
-              echo "::error::Missing macOS signing secret: $name"
-              exit 1
+              missing=$((missing + 1))
             fi
           done
+          if [[ "$missing" -eq 5 ]]; then
+            echo 'ready=false' >> "$GITHUB_OUTPUT"
+            echo '::notice::Skipping macOS artifacts until Apple signing secrets are configured'
+          elif [[ "$missing" -gt 0 ]]; then
+            echo '::error::Apple signing secrets are incomplete'
+            exit 1
+          else
+            echo 'ready=true' >> "$GITHUB_OUTPUT"
+          fi
       - run: npm run dist
         if: runner.os != 'macOS'
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
       - name: Build, sign and notarize macOS app
-        if: runner.os == 'macOS'
+        if: runner.os == 'macOS' && steps.mac_signing.outputs.ready == 'true'
         run: npm run dist
         env:
           CSC_LINK: ${{ secrets.MAC_CSC_LINK }}
@@ -61,7 +71,7 @@ jobs:
           APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
       - name: Verify macOS signature and notarization
-        if: runner.os == 'macOS'
+        if: runner.os == 'macOS' && steps.mac_signing.outputs.ready == 'true'
         shell: bash
         run: |
           app="$(find dist -maxdepth 2 -name Veyral.app -type d -print -quit)"
@@ -72,6 +82,7 @@ jobs:
       - run: node tools/check-windows-elevation.cjs
         if: runner.os == 'Windows'
       - uses: actions/upload-artifact@v4
+        if: runner.os != 'macOS' || steps.mac_signing.outputs.ready == 'true'
         with:
           name: veyral-${{ matrix.name }}
           path: |

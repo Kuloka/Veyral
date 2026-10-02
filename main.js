@@ -110,6 +110,7 @@ async function monitorProxy(){
   const ip=await pcExitIp().catch(()=>null);
   if(ip===active.entry.exitIp&&active.tun.child.exitCode===null){active.failures=0;return;}
   active.failures++;
+  logConnection('monitor.failed',{proxy:active.entry.address,expectedIp:active.entry.exitIp,actualIp:ip,failures:active.failures,tunExitCode:active.tun.child.exitCode,tunError:active.tun.error()});
   if(active.failures<2)return;
   if(active.entry.type!=='wireguard')reliability.record(active.entry,false);
   switching=true;

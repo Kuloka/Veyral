@@ -34,7 +34,7 @@ Set these GitHub Actions repository secrets under **Settings → Secrets and var
 | `APPLE_APP_SPECIFIC_PASSWORD` | App-specific password, not the account password |
 | `APPLE_TEAM_ID` | Ten-character Apple Developer Team ID |
 
-On macOS, encode the certificate with `base64 -i DeveloperID.p12 | tr -d '\n'` and paste the output into `MAC_CSC_LINK`. Do not commit the `.p12`, passwords, or API keys. The release workflow now signs, notarizes, staples, and verifies the app before uploading the DMG. It fails if any signing secret is missing; existing unsigned releases are not retroactively signed.
+On macOS, encode the certificate with `base64 -i DeveloperID.p12 | tr -d '\n'` and paste the output into `MAC_CSC_LINK`. Do not commit the `.p12`, passwords, or API keys. When all five secrets are present, the release workflow signs, notarizes, staples, and verifies the app before uploading the DMG. If none are present, macOS artifacts are skipped; incomplete credentials fail the build. Existing unsigned releases are not retroactively signed.
 
 To run from source, install Node.js 22 and run `npm install`, then `npm start`. The `prestart` script downloads the official sing-box binary for your OS and verifies its archive checksum. On Windows, `start.cmd` is a quiet first-launch shortcut that installs dependencies and the engine if needed, then builds the local `Veyral.exe` launcher from `Veyral.Launcher.cs` if it is missing. Generated executables stay out of Git.
 
